@@ -2,7 +2,7 @@ import { Component, ReactElement } from 'react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Store, Dispatch, bindActionCreators } from 'redux';
-import { connect, Provider, DispatchProp } from 'react-redux';
+import { connect, Provider, DispatchProp, MapStateToProps } from 'react-redux';
 import objectAssign = require('object-assign');
 
 //
@@ -375,6 +375,32 @@ namespace TestTOwnPropsInference {
 
     // This should not compile, which is good.
     // React.createElement(ConnectedWithTypeHint, { anything: 'goes!' });
+
+    // Inference shouldn't fail if state props is picked out of the component's props.
+    // This case is useful because you may have a shared "dumb" component that lists its props,
+    // and elsewhere you connect it, by providing some things from the state, some from dispatch,
+    // some from own props passed down, etc. You shouldn't need to convert the dumb component to
+    // be aware of the types that the connected component is using to build up the props that you
+    // pass to it.
+    interface AllProps {
+        own: string
+        state: string
+    }
+
+    class AllPropsComponent extends React.Component<AllProps & DispatchProp<any>, void> {
+        render() {
+            return <div/>;
+        }
+    }
+
+    type PickedOwnProps = Pick<AllProps, "own">
+    type PickedStateProps = Pick<AllProps, "state">
+
+    const mapStateToPropsForPicked = (state: any): PickedStateProps => {
+        return { state: "string" }
+    }
+    const ConnectedWithPickedOwnProps = connect(mapStateToPropsForPicked)(AllPropsComponent);
+    <ConnectedWithPickedOwnProps own="blah" />
 }
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/16021
