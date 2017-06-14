@@ -396,7 +396,7 @@ namespace TestTOwnPropsInference {
     type PickedOwnProps = Pick<AllProps, "own">
     type PickedStateProps = Pick<AllProps, "state">
 
-    const mapStateToPropsForPicked = (state: any): PickedStateProps => {
+    const mapStateToPropsForPicked: MapStateToProps<PickedStateProps, PickedOwnProps> = (state: any): PickedStateProps => {
         return { state: "string" }
     }
     const ConnectedWithPickedOwnProps = connect(mapStateToPropsForPicked)(AllPropsComponent);
