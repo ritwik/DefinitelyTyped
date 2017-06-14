@@ -20,7 +20,7 @@ export interface DispatchProp<S> {
 }
 
 interface ComponentDecorator<TMergedProps, TOwnProps> {
-    <T extends TOwnProps>(component: Component<T & TMergedProps>): ComponentClass<T>;
+    (component: Component<TOwnProps & TMergedProps>): ComponentClass<TOwnProps>;
 }
 
 interface ComponentMergeDecorator<TMergedProps, TOwnProps> {
